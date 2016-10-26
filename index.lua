@@ -34,7 +34,6 @@ options.args_expr = params.processArgs or ''
 options.reconcile = params.reconcile or ''
 -- How often to output a measurement
 
-
 function getProcessData(params)
    params = params or { match = ''}
    print('{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(params) .. '}');
@@ -59,6 +58,7 @@ local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
 
 -- Define our function that "samples" our measurement value
 function poll(params)
+  print("888888888"..json.stringify(params))
   local callback = function()
     --print("callback called")
   end
