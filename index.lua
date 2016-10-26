@@ -26,7 +26,6 @@ local boundary = require('boundary')
 
 local params = json.parse(fs.readFileSync('param.json')) or {}
 local options = {}
-print("Params ====>"..json.stringify(params))
 options.process = params.processName or ''
 options.path_expr = params.processPath or ''
 options.cwd_expr = params.processCwd or ''
@@ -36,7 +35,6 @@ options.reconcile = params.reconcile or ''
 
 function getProcessData()
    parameter = options or { match = ''}
-   print('{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(parameter) .. '}');
    return '{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(parameter) .. '}\n'
 end
 
@@ -93,5 +91,5 @@ end
 
 -- Set the timer interval and call back function poll(). Multiple input configuration
 -- pollIterval by 1000 since setIterval expects milliseconds
-timer.setInterval(POLL_INTERVAL * 1000, poll())
+timer.setInterval(POLL_INTERVAL, poll())
 

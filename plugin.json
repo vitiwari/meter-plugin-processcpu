@@ -30,6 +30,12 @@
 			"description" : "A regular expression to match the current working directory of the process.",
 			"type" : "string"
 		},
+    {
+			"title" : "Poll Interval",
+			"name" : "pollInterval",
+			"description" : "Value in milisecond (Enter 1000 for 1sec).",
+			"type" : "number"
+		},
 		{
 			"title" : "Reconcile option",
 			"name" : "reconcile",
