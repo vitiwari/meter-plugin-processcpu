@@ -66,14 +66,15 @@ function poll()
   socket:once('data',function(data)
       local sucess,  parsed = parseJson(data)
       local result = {}
+      print(json.stringify(parsed))
       --local i=0
-      for K,V  in pairs(parsed.result.processes) do
+     --[[ for K,V  in pairs(parsed.result.processes) do
           local resultitem={}
           resultitem['metric']='TRUESIGHT_METER_PROCESSCPU'
           for ki,vi in pairs(V) do
             if ki=='cpuPct' then
               resultitem['val']= vi
-            end
+           end
             if ki=='name' then
               resultitem['source']= vi
             end       
@@ -81,12 +82,12 @@ function poll()
         local timestamp = os.time()
         resultitem['timestamp']=timestamp
         table.insert(result,resultitem)
-      --i=i+1;
+      ]]--
       end
       socket:destroy()
-     for K,V  in pairs(result) do
-        print(string.format("%s %s %s %s", V.metric, V.val,V.source, V.timestamp))
-     end
+    --[[ for K,V  in pairs(result) do
+          print(string.format("%s %s %s %s", V.metric, V.val,V.source, V.timestamp))
+      ]]-- end
   end)
 end
 
