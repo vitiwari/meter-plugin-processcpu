@@ -2,7 +2,7 @@
     "TRUESIGHT_METER_PROCESSCPU": {
         "defaultAggregate": "avg",
         "defaultResolutionMS": 1000,
-        "description": "Example metric for the Process CPU meter plugin",
+        "description": "Metric for the Process CPU meter lua plugin",
         "displayName": "Truesight ProcessCPU",
         "displayNameShort": "Truesight ProcessCPU",
         "isDisabled": 0,
