@@ -57,20 +57,20 @@ end
 local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
 
 -- Define our function that "samples" our measurement value
-function poll(parameter)
+function poll()
   
   local callback = function()
     --print("callback called")
   end
   local socket = net.createConnection(9192, '127.0.0.1', callback)
-  socket:write(getProcessData(parameter))
+  socket:write(getProcessData(options))
   socket:once('data',function(data)
       local sucess,  parsed = parseJson(data)
       local result = {}
       --local i=0
       for K,V  in pairs(parsed.result.processes) do
           local resultitem={}
-          resultitem['metric']='PROCESS_CPU_PERCENTAGE'
+          resultitem['metric']='TRUESIGHT_METER_PROCESSCPU'
           for ki,vi in pairs(V) do
             if ki=='cpuPct' then
               resultitem['val']= vi
@@ -93,5 +93,5 @@ end
 
 -- Set the timer interval and call back function poll(). Multiple input configuration
 -- pollIterval by 1000 since setIterval expects milliseconds
-timer.setInterval(POLL_INTERVAL * 1000, poll(options))
+timer.setInterval(POLL_INTERVAL * 1000, poll())
 
