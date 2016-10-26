@@ -64,22 +64,27 @@ local poll=function ()
   socket:write(getProcessData())
   socket:once('data',function(data)
       local sucess,  parsed = parseJson(data)
+
+      --print(json.stringify(parsed));
       local result = {}
-      for K,V  in pairs(parsed.result.processes) do
+      if(parsed.result.processes==nil)then
+        --print No process
+      else
+        for K,V  in pairs(parsed.result.processes) do
           local resultitem={}
           resultitem['metric']='TRUESIGHT_METER_PROCESSCPU'
           for ki,vi in pairs(V) do
             if ki=='cpuPct' then
-              resultitem['val']= tonumber(vi)/100
-           end
+              resultitem['val']= vi
+            end
             if ki=='name' then
               resultitem['source']= vi
-            end       
+            end
           end
-        local timestamp = os.time()
-        resultitem['timestamp']=timestamp
-        table.insert(result,resultitem)
-      
+          local timestamp = os.time()
+          resultitem['timestamp']=timestamp
+          table.insert(result,resultitem)
+        end
       end
       socket:destroy()
     for K,V  in pairs(result) do
@@ -87,6 +92,7 @@ local poll=function ()
      end
   end)
 end
+
 
 -- Set the timer interval and call back function poll(). Multiple input configuration
 -- pollIterval by 1000 since setIterval expects milliseconds
