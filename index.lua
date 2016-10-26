@@ -54,12 +54,13 @@ end
 
 local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
 
+local callback = function()
+    --print("callback called")
+end
+
 -- Define our function that "samples" our measurement value
 function poll()
   
-  local callback = function()
-    --print("callback called")
-  end
   local socket = net.createConnection(9192, '127.0.0.1', callback)
   socket:write(getProcessData())
   socket:once('data',function(data)
