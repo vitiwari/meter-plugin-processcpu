@@ -57,13 +57,13 @@ end
 local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
 
 -- Define our function that "samples" our measurement value
-function poll(params)
-  print("888888888"..json.stringify(params))
+function poll(parameter)
+  
   local callback = function()
     --print("callback called")
   end
   local socket = net.createConnection(9192, '127.0.0.1', callback)
-  socket:write(getProcessData(params))
+  socket:write(getProcessData(parameter))
   socket:once('data',function(data)
       local sucess,  parsed = parseJson(data)
       local result = {}
