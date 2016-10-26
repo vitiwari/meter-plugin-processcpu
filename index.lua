@@ -70,7 +70,7 @@ local poll=function ()
           resultitem['metric']='TRUESIGHT_METER_PROCESSCPU'
           for ki,vi in pairs(V) do
             if ki=='cpuPct' then
-              resultitem['val']= vi/100
+              resultitem['val']= vi
            end
             if ki=='name' then
               resultitem['source']= vi
