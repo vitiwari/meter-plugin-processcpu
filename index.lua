@@ -67,7 +67,6 @@ function poll(params)
       end
       socket:destroy()
      for K,V  in pairs(result) do
-        measurement(V.metric, V.value, V.timestamp, V.source)
         print(string.format("%s %s %s %s", V.metric, V.value,V.source, V.timestamp))
      end
   end)
