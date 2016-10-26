@@ -33,7 +33,7 @@ options.cwd_expr = params.processCwd or ''
 options.args_expr = params.processArgs or ''
 options.reconcile = params.reconcile or ''
 -- How often to output a measurement
-local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
+
 
 function getProcessData(params)
    params = params or { match = ''}
@@ -44,6 +44,18 @@ end
 function parseJson(body)
   return pcall(json.parse, body)
 end
+
+function trim(val)
+  return string.match(val, '^%s*(.-)%s*$')
+end
+function isEmpty(str)
+  return (str == nil or trim(str) == '')
+end
+function notEmpty(str, default)
+  return not isEmpty(str) and str or default
+end
+
+local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
 
 -- Define our function that "samples" our measurement value
 function poll(params)
