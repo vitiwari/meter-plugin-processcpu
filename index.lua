@@ -25,8 +25,15 @@ local table = require('table')
 local boundary = require('boundary')
 
 local params = json.parse(fs.readFileSync('param.json')) or {}
+local options = {}
+
+options.process = params.processName or ''
+options.path_expr = params.processPath or ''
+options.cwd_expr = params.processCwd or ''
+options.args_expr = params.processArgs or ''
+options.reconcile = params.reconcile or ''
 -- How often to output a measurement
-local POLL_INTERVAL = 5
+local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
 
 function getProcessData(params)
    params = params or { match = ''}
@@ -74,5 +81,5 @@ end
 
 -- Set the timer interval and call back function poll(). Multiple input configuration
 -- pollIterval by 1000 since setIterval expects milliseconds
-timer.setInterval(POLL_INTERVAL * 1000, poll(params))
+timer.setInterval(POLL_INTERVAL * 1000, poll(options))
 
