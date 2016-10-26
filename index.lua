@@ -26,7 +26,7 @@ local boundary = require('boundary')
 
 local params = json.parse(fs.readFileSync('param.json')) or {}
 local options = {}
-
+print("Params ====>"..json.stringify(params))
 options.process = params.processName or ''
 options.path_expr = params.processPath or ''
 options.cwd_expr = params.processCwd or ''
