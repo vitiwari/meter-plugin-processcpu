@@ -1,6 +1,6 @@
 {
   "description": "Meter Plugin for process cpu",
-  "command": "boundary-meter init.lua",
+  "command": "boundary-meter index.lua",
   "icon": "icon.png",
   "metrics": [
     "TRUESIGHT_METER_PROCESSCPU"
