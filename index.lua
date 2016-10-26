@@ -34,10 +34,10 @@ options.args_expr = params.processArgs or ''
 options.reconcile = params.reconcile or ''
 -- How often to output a measurement
 
-function getProcessData(params)
-   params = params or { match = ''}
-   print('{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(params) .. '}');
-   return '{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(params) .. '}\n'
+function getProcessData()
+   parameter = options or { match = ''}
+   print('{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(parameter) .. '}');
+   return '{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(parameter) .. '}\n'
 end
 
 function parseJson(body)
@@ -63,7 +63,7 @@ function poll()
     --print("callback called")
   end
   local socket = net.createConnection(9192, '127.0.0.1', callback)
-  socket:write(getProcessData(options))
+  socket:write(getProcessData())
   socket:once('data',function(data)
       local sucess,  parsed = parseJson(data)
       local result = {}
