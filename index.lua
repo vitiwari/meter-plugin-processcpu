@@ -22,7 +22,6 @@ local fs = require('fs')
 local net = require('net')
 local json = require('json')
 local table = require('table')
-local boundary = require('boundary')
 
 local params = json.parse(fs.readFileSync('param.json')) or {}
 local options = {}
@@ -34,7 +33,7 @@ options.reconcile = params.reconcile or ''
 -- How often to output a measurement
 
 function getProcessData()
-   parameter = options or { match = ''}
+   local parameter = options or { match = ''}
    return '{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(parameter) .. '}\n'
 end
 
@@ -54,21 +53,19 @@ end
 
 local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
 
-local callback = function()
-    --print("callback called")
-end
+
 
 -- Define our function that "samples" our measurement value
-function poll()
-  
+local poll=function ()
+  local callback = function()
+    --print("callback called")
+  end
   local socket = net.createConnection(9192, '127.0.0.1', callback)
   socket:write(getProcessData())
   socket:once('data',function(data)
       local sucess,  parsed = parseJson(data)
       local result = {}
-      print(json.stringify(parsed))
-      --local i=0
-     --[[ for K,V  in pairs(parsed.result.processes) do
+      for K,V  in pairs(parsed.result.processes) do
           local resultitem={}
           resultitem['metric']='TRUESIGHT_METER_PROCESSCPU'
           for ki,vi in pairs(V) do
@@ -82,16 +79,16 @@ function poll()
         local timestamp = os.time()
         resultitem['timestamp']=timestamp
         table.insert(result,resultitem)
-      ]]--
+      
       end
       socket:destroy()
-    --[[ for K,V  in pairs(result) do
+    for K,V  in pairs(result) do
           print(string.format("%s %s %s %s", V.metric, V.val,V.source, V.timestamp))
-      ]]-- end
+     end
   end)
 end
 
 -- Set the timer interval and call back function poll(). Multiple input configuration
 -- pollIterval by 1000 since setIterval expects milliseconds
-timer.setInterval(POLL_INTERVAL, poll())
+timer.setInterval(POLL_INTERVAL, poll)
 
