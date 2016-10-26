@@ -91,6 +91,10 @@ local poll=function ()
           print(string.format("%s %s %s %s", V.metric, V.val,V.source, V.timestamp))
      end
   end)
+  socket:once('error',function(data)
+    -- print("Socket Resulted in error "..json.stringify(data))
+    --print the log
+  end)
 end
 
 
