@@ -1,5 +1,10 @@
-{		
-      "source" : "localhost",
-			"processArgs" : ".*meter",
-      "reconcile":"first"
+{
+	"items" :
+	[
+    {		
+          "source" : "localhost",
+          "processArgs" : ".*meter",
+          "reconcile":"first"
+    }
+  ]
 }

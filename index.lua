@@ -23,20 +23,27 @@ local net = require('net')
 local json = require('json')
 local table = require('table')
 
-local params = json.parse(fs.readFileSync('param.json')) or {}
-local options = {}
-options.process = params.processName or ''
-options.path_expr = params.processPath or ''
-options.cwd_expr = params.processCwd or ''
-options.args_expr = params.processArgs or ''
-options.reconcile = params.reconcile or ''
--- How often to output a measurement
 
-function getProcessData()
-   local parameter = options or { match = ''}
-   return '{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(parameter) .. '}\n'
+local  params = json.parse(fs.readFileSync('param.json')) or {}
+local options  = params.items or {}
+
+
+--[[
+  @Vitiwari
+  This function creates the JSON RPC command to meter according to the params
+]]--
+function getProcessData(opt)
+   local parameter = {}
+   parameter.process = opt.processName or ''
+   parameter.path_expr = opt.processPath or ''
+   parameter.cwd_expr = opt.processCwd or ''
+   parameter.args_expr = opt.processArgs or ''
+   parameter.reconcile = opt.reconcile or ''
+   local prm = parameter or { match = ''}
+   return '{"jsonrpc":"2.0","method":"get_process_info","id":1,"params":' .. json.stringify(prm) .. '}\n'
 end
 
+--Utility functions 
 function parseJson(body)
   return pcall(json.parse, body)
 end
@@ -51,54 +58,42 @@ function notEmpty(str, default)
   return not isEmpty(str) and str or default
 end
 
-local POLL_INTERVAL = notEmpty(params.pollInterval,1000)
+local POLL_INTERVAL = 2000; -- currently poll as 2sec TODO Dynamic
 
-
-
--- Define our function that "samples" our measurement value
-local poll=function ()
+-- this function is called for every param
+local jsonRpcCall=function (process)
   local callback = function()
     --print("callback called")
   end
   local socket = net.createConnection(9192, '127.0.0.1', callback)
-  socket:write(getProcessData())
+  socket:write(getProcessData(process))
   socket:once('data',function(data)
       local sucess,  parsed = parseJson(data)
-
-      --print(json.stringify(parsed));
-      local result = {}
       if(parsed.result.processes==nil)then
-        --print No process
+        --print No process Stay Silent TODO logs
       else
         for K,V  in pairs(parsed.result.processes) do
-          local resultitem={}
-          resultitem['metric']='TRUESIGHT_METER_PROCESSCPU'
-          for ki,vi in pairs(V) do
-            if ki=='cpuPct' then
-              resultitem['val']= tonumber(vi)/100
-            end
-            if ki=='name' then
-              resultitem['source']= vi
-            end
-          end
-          local timestamp = os.time()
-          resultitem['timestamp']=timestamp
-          table.insert(result,resultitem)
+          local per = V["cpuPct"]/100
+          local name = process.source.."_"..V["name"]
+          local timestamp=os.time()
+          print(string.format("%s %s %s %s", 'TRUESIGHT_METER_PROCESSCPU', per,name, timestamp))
         end
       end
       socket:destroy()
-    for K,V  in pairs(result) do
-          print(string.format("%s %s %s %s", V.metric, V.val,V.source, V.timestamp))
-     end
   end)
   socket:once('error',function(data)
-    -- print("Socket Resulted in error "..json.stringify(data))
-    --print the log
+    print("Socket Resulted in error "..json.stringify(data))
   end)
 end
 
 
--- Set the timer interval and call back function poll(). Multiple input configuration
--- pollIterval by 1000 since setIterval expects milliseconds
+local poll=function ()
+  for key,process  in pairs(options) do
+    jsonRpcCall(process)
+  end
+end
+
+
+-- Set the timer interval and call back function poll().
 timer.setInterval(POLL_INTERVAL, poll)
 

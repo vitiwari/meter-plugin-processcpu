@@ -1,10 +1,11 @@
 {
-  "description": "Meter Plugin for process cpu",
+  "description": "Meter lua Plugin for process cpu",
   "command": "boundary-meter index.lua",
   "icon": "icon.png",
   "metrics": [
     "TRUESIGHT_METER_PROCESSCPU"
   ],
+  "paramArray" : { "itemTitle" : ["source"], "schemaTitle" : "Process"},
   "paramSchema" : [
 		{
 			"title" : "Source",
@@ -29,12 +30,6 @@
 			"name" : "processCwd",
 			"description" : "A regular expression to match the current working directory of the process.",
 			"type" : "string"
-		},
-    {
-			"title" : "Poll Interval",
-			"name" : "pollInterval",
-			"description" : "Value in milisecond (Enter 1000 for 1sec).",
-			"type" : "number"
 		},
 		{
 			"title" : "Reconcile option",
