@@ -58,7 +58,7 @@ function notEmpty(str, default)
   return not isEmpty(str) and str or default
 end
 
-local POLL_INTERVAL = 2000; -- currently poll as 2sec TODO Dynamic
+local POLL_INTERVAL = 5000; -- currently poll as 2sec TODO Dynamic
 
 -- this function is called for every param
 local jsonRpcCall=function (process)
